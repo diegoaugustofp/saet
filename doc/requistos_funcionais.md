@@ -70,11 +70,19 @@ Componentes principais:
 - Administrador de Sistema: cuida de deploy, monitoramento técnico e infraestrutura.
 
 ## 2.3 Ambiente operacional
+
 - Servidor de aplicação (ou container) executando o SAET.
-- API/SDK Python do MT5 instalada em ambiente compatível.
+- Sistema operacional Windows, uma vez que a plataforma MetaTrader 5 é nativa para esse ambiente e pode apresentar problemas de compatibilidade em outros sistemas.
+- Instalação do MetaTrader 5 (terminal cliente) no mesmo host onde o SAET for executado, utilizando instalação padrão fornecida pela corretora ou pelo site oficial.
+- API/SDK Python do MT5 instalada em ambiente compatível, incluindo a biblioteca `MetaTrader5` instalada via `pip install MetaTrader5`.
+- Ambiente Python configurado com suporte à instalação de pacotes via `pip`, podendo ser:
+  - Instalação direta do Python com a opção “Add Python to PATH” habilitada, ou
+  - Ambiente Anaconda devidamente configurado.
+- Bibliotecas auxiliares como `pandas` e `matplotlib` instaladas, quando necessárias para análise e visualização.
 - Conexão à internet com os servidores MT5 do broker.
 - Banco de dados para parâmetros, resultados e logs.
-- No container em que o SAET for executado, deve estar em execução uma instância do MT5 ou um serviço equivalente que permita o acesso à API de negociação.
+- No container ou host em que o SAET for executado, deve estar em execução uma instância do terminal MetaTrader 5 que permita o acesso à API de negociação.
+
 
 ## 2.4 Premissas e dependências
 - Existência de conta(s) demo e real ativas em broker compatível com MT5.
@@ -334,6 +342,18 @@ O sistema deve fornecer um painel que exiba status de conexão, estratégias ati
 **SYS-FR-060 – Aplicação de limites de risco por conta**  
 O sistema deve impedir a abertura de novas posições quando a aplicação dos limites de risco configurados para a conta resultar em violação dos limites de exposição ou perda máxima definidos para essa conta.
 
+## 6.8 Integração técnica com MT5
+
+**SYS-FR-070 – Inicialização da integração com MT5**  
+O sistema deve inicializar a integração com o MetaTrader 5 antes de executar qualquer operação de leitura de dados de mercado ou envio de ordens, verificando o sucesso da inicialização e registrando em log o estado do terminal conectado.
+
+**SYS-FR-071 – Verificação de terminal MT5**  
+O sistema deve consultar e registrar informações do terminal MetaTrader 5 conectado (por exemplo, conta ativa, servidor, modo demo/real) no momento da inicialização da integração, de forma a validar que o ambiente selecionado no SAET é compatível com o terminal.
+
+**SYS-FR-072 – Encerramento da integração com MT5**  
+O sistema deve encerrar a integração com o MetaTrader 5 ao finalizar a execução planejada (por exemplo, término de sessão, parada do serviço ou fim de um lote de backtests), garantindo o fechamento adequado da sessão com o terminal.
+
+
 ---
 
 # 7. Requisitos não funcionais
@@ -383,6 +403,16 @@ Na primeira versão, o sistema deve expor suas funcionalidades por meio de inter
 
 **SYS-NFR-050 – Limites iniciais de risco por conta**  
 O sistema deve permitir configurar limites iniciais de risco por conta (por exemplo, exposição máxima total, perda máxima diária e tamanho máximo de posição por conta), devendo aplicar esses limites na validação de abertura de novas posições em qualquer estratégia associada à conta.
+
+## 7.7 Desempenho
+
+**SYS-NFR-003 – Dependência de terminal MT5 em execução**  
+O sistema deve considerar como pré-requisito de operação que o terminal MetaTrader 5 esteja em execução no mesmo host do ambiente Python utilizado pelo SAET, uma vez que a biblioteca `MetaTrader5` depende de um terminal ativo para estabelecer a conexão.
+
+**SYS-NFR-004 – Inicialização e encerramento de sessão MT5**  
+O sistema deve utilizar chamadas equivalentes a `mt5.initialize()` para estabelecer a sessão com o terminal MetaTrader 5 antes de qualquer operação de mercado ou consulta de dados, e chamadas equivalentes a `mt5.shutdown()` para encerrar a sessão ao finalizar o processamento ou quando o módulo de integração for desligado.
+
+
 
 ---
 
