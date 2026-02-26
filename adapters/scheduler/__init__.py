@@ -1,0 +1,1 @@
+"""Adapter de agendamento de tarefas."""
