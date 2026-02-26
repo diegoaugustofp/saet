@@ -1,0 +1,1 @@
+"""Interface CLI do SAET (Typer)."""

@@ -1,0 +1,1 @@
+"""Estrategias de exemplo do SAET."""

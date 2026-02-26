@@ -1,0 +1,1 @@
+"""Adapters (implementacoes concretas) do SAET."""

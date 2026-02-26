@@ -1,0 +1,1 @@
+"""Adapter de integracao com MetaTrader 5."""

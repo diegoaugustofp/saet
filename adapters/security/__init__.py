@@ -1,0 +1,1 @@
+"""Adapter de seguranca e criptografia."""
